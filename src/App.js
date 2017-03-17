@@ -4,6 +4,7 @@ import './styles/App.css';
 
 // components
 import MainTable from './components/MainTable.js';
+import Header from './components/Header.js';
 
 // Helpers
 import createSheetMatrix from './helpers/createSheetMatrix.js'; 
@@ -24,6 +25,8 @@ class App extends Component {
     };
 
     this.handleCellEdit = this.handleCellEdit.bind(this);
+    this.handleMatrixSizeChange = this.handleMatrixSizeChange.bind(this);
+    this.createSheet = this.createSheet.bind(this);
   }
 
   saveSheetToLocalStorage() {
@@ -41,17 +44,32 @@ class App extends Component {
   }
 
   componentWillMount() {
-    const newMatrix = createSheetMatrix(6,7);
     let sheet = {};
     if (fetchItemFromLocalStorage('sheet')) {
       sheet = JSON.parse(localStorage.getItem('sheet'))
       this.setState({
         matrix: sheet 
       })
-    } else {
-      const newMatrix = createSheetMatrix(6,7)
+    } 
+  }
+
+  createSheet() {
+    console.log(this.state.rows, this.state.columns);
+    const newMatrix = createSheetMatrix(parseInt(this.state.rows, 10), parseInt(this.state.columns, 10));
+    this.setState({
+      matrix: newMatrix
+    });
+    saveItemToLocalStorage('sheet', this.state.matrix)
+  }
+
+  handleMatrixSizeChange(type, value) {
+    if (type === 'rows') {
       this.setState({
-        matrix: newMatrix
+        rows: value,
+      });
+    } else {
+      this.setState({
+        columns: value,
       });
     }
   }
@@ -111,6 +129,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Header  rows={this.state.rows} columns={this.state.columns} 
+          handleMatrixSizeChange={this.handleMatrixSizeChange}
+          createSheet={this.createSheet}/>
         <MainTable matrix={this.state.matrix} onCellEdit={this.handleCellEdit}/>
         <button onClick={() => this.handleAddColumn()}>Add Column</button>
         <button onClick={() => this.handleRemoveColumn()}>Remove Column</button>
