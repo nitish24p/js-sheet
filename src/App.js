@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import './main.scss';
+import './styles/App.css';
 
 // components
 import MainTable from './components/MainTable.js';
 
+// Helpers
+import createSheetMatrix from './helpers/createSheetMatrix.js'; 
+import { saveItemToLocalStorage, fetchItemFromLocalStorage } from './helpers/LocalStorageHelper.js';
+
 const rows = 6;
 const columns = 7;
-
-const createSheetMatrix = (rows, columns) => {
-  let result = [];
-  for (var i = 0; i < rows; i++) {
-    result.push(new Array(columns).fill(''));
-  }
-
-  return result;
-}
 
 
 class App extends Component {
@@ -32,6 +26,10 @@ class App extends Component {
     this.handleCellEdit = this.handleCellEdit.bind(this);
   }
 
+  saveSheetToLocalStorage() {
+    localStorage.setItem('sheet', JSON.stringify(this.state.matrix));
+  }
+
   handleCellEdit(rowIndex, columnIndex, value) {
     const matrix = [...this.state.matrix];
     matrix[rowIndex][columnIndex] = value;
@@ -39,13 +37,23 @@ class App extends Component {
     this.setState({
       matrix
     });
+    saveItemToLocalStorage('sheet', this.state.matrix);
   }
 
   componentWillMount() {
-    const newMatrix = createSheetMatrix(6,7)
-    this.setState({
-      matrix: newMatrix
-    });
+    const newMatrix = createSheetMatrix(6,7);
+    let sheet = {};
+    if (fetchItemFromLocalStorage('sheet')) {
+      sheet = JSON.parse(localStorage.getItem('sheet'))
+      this.setState({
+        matrix: sheet 
+      })
+    } else {
+      const newMatrix = createSheetMatrix(6,7)
+      this.setState({
+        matrix: newMatrix
+      });
+    }
   }
 
   _calculateNumberOfColumns () {
@@ -61,6 +69,8 @@ class App extends Component {
     this.setState({
       matrix: newMatrix,
     });
+
+    saveItemToLocalStorage('sheet', this.state.matrix)
   }
 
   handleRemoveColumn() {
@@ -70,6 +80,8 @@ class App extends Component {
     this.setState({
       matrix: newMatrix,
     });
+
+    saveItemToLocalStorage('sheet', this.state.matrix)
   }
 
   handleAddRow() {
@@ -77,13 +89,13 @@ class App extends Component {
     const columnCount = this._calculateNumberOfColumns();
     const matrix = [...this.state.matrix];
 
-    for (var i = 0; i < columnCount; i++) {
-      newRow.push('');
-    }
-    matrix.push(newRow);
+    matrix.push(new Array(columnCount).fill(''));
+
     this.setState({
       matrix
     });
+
+    saveItemToLocalStorage('sheet', this.state.matrix)
   }
 
   handleRemoveRow() {
@@ -92,6 +104,8 @@ class App extends Component {
     this.setState({
       matrix
     });
+
+    saveItemToLocalStorage('sheet', this.state.matrix)
   }
 
   render() {
