@@ -46,14 +46,15 @@ class App extends Component {
     this.setState({
       matrix: newMatrix
     });
-    //console.log(this.state.matrix.length);
   }
 
-  _calculateNumberOfRows () {
-    //const add
+  _calculateNumberOfColumns () {
+    const matrix = this.state.matrix;
+    if (!matrix.length) return;
+    return matrix[0].length
   }
 
-  addColumnToSheet() {
+  handleAddColumn() {
     const matrix = [...this.state.matrix];
     const newMatrix = matrix.map((row, key) => row.concat(''));
 
@@ -62,7 +63,7 @@ class App extends Component {
     });
   }
 
-  removeColumnToSheet() {
+  handleRemoveColumn() {
     const matrix = [...this.state.matrix];
     const newMatrix = matrix.map((row, key) => row.slice(0, row.length - 1));
 
@@ -71,13 +72,36 @@ class App extends Component {
     });
   }
 
+  handleAddRow() {
+    const newRow = [];
+    const columnCount = this._calculateNumberOfColumns();
+    const matrix = [...this.state.matrix];
+
+    for (var i = 0; i < columnCount; i++) {
+      newRow.push('');
+    }
+    matrix.push(newRow);
+    this.setState({
+      matrix
+    });
+  }
+
+  handleRemoveRow() {
+    let matrix = [...this.state.matrix];
+    matrix = matrix.slice(0, matrix.length - 1);
+    this.setState({
+      matrix
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <MainTable matrix={this.state.matrix} onCellEdit={this.handleCellEdit}/>
-        <button onClick={() => this.addColumnToSheet()}>Add Column</button>
-        <button onClick={() => this.removeColumnToSheet()}>Remove Column</button>
-        <button>Add Row</button>
+        <button onClick={() => this.handleAddColumn()}>Add Column</button>
+        <button onClick={() => this.handleRemoveColumn()}>Remove Column</button>
+        <button onClick={() => this.handleAddRow()}>Add Row</button>
+        <button onClick={() => this.handleRemoveRow()}>Remove Row</button>
       </div>
     );
   }
