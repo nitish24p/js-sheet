@@ -5,6 +5,7 @@ import './styles/App.css';
 // components
 import MainTable from './components/MainTable.js';
 import Header from './components/Header.js';
+import ActionButtons from './components/ActionButtons.js';
 
 // Helpers
 import createSheetMatrix from './helpers/createSheetMatrix.js'; 
@@ -21,16 +22,24 @@ class App extends Component {
     this.state = {
       matrix: {},
       rows: '',
-      columns: ''
+      columns: '',
+      isMousePressed: false
     };
 
     this.handleCellEdit = this.handleCellEdit.bind(this);
     this.handleMatrixSizeChange = this.handleMatrixSizeChange.bind(this);
     this.createSheet = this.createSheet.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleAddColumn = this.handleAddColumn.bind(this);
+    this.handleRemoveColumn = this.handleRemoveColumn.bind(this);
+    this.handleAddRow = this.handleAddRow.bind(this);
+    this.handleRemoveRow = this.handleRemoveRow.bind(this);
   }
 
-  saveSheetToLocalStorage() {
-    localStorage.setItem('sheet', JSON.stringify(this.state.matrix));
+  handleMouseDown() {
+    this.setState({
+      isMousePressed: !this.state.isMousePressed,
+    });
   }
 
   handleCellEdit(rowIndex, columnIndex, value) {
@@ -50,7 +59,11 @@ class App extends Component {
       this.setState({
         matrix: sheet 
       })
-    } 
+    } else {
+      this.setState({
+        matrix: [] 
+      })
+    }
   }
 
   createSheet() {
@@ -103,7 +116,6 @@ class App extends Component {
   }
 
   handleAddRow() {
-    const newRow = [];
     const columnCount = this._calculateNumberOfColumns();
     const matrix = [...this.state.matrix];
 
@@ -133,10 +145,12 @@ class App extends Component {
           handleMatrixSizeChange={this.handleMatrixSizeChange}
           createSheet={this.createSheet}/>
         <MainTable matrix={this.state.matrix} onCellEdit={this.handleCellEdit}/>
-        <button onClick={() => this.handleAddColumn()}>Add Column</button>
-        <button onClick={() => this.handleRemoveColumn()}>Remove Column</button>
-        <button onClick={() => this.handleAddRow()}>Add Row</button>
-        <button onClick={() => this.handleRemoveRow()}>Remove Row</button>
+        <ActionButtons 
+          handleAddColumn={this.handleAddColumn}
+          handleRemoveColumn={this.handleRemoveColumn}
+          handleAddRow={this.handleAddRow}
+          handleRemoveRow={this.handleRemoveRow}
+        />
       </div>
     );
   }
