@@ -3,9 +3,10 @@ import React  from 'react';
 import TableRow from './TableRow.js';
 
 const MainTable = (props) => {
-  //console.log(props.matrix);
-  const renderTableRows = props.matrix[0].map((row, key) => {
-    return ( <TableRow rows={row} key={key} rowIndex={key}/>)
+  console.log(props.matrix.length);
+  const renderTableRows = props.matrix.map((row, key) => {
+    console.log(key,row);
+    return ( <TableRow rows={row} key={key} rowIndex={key} onCellEdit={props.onCellEdit}/>)
   })
 
   return (

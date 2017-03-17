@@ -24,10 +24,14 @@
 }
 
 .table-sheet {
-  border: 1px solid #eaeaea;
+
 }
 
 .table-sheet td {
   border: 1px solid #f5f5f5;
-  padding: 20px;
+}
+
+.table-sheet td input:focus {
+  outline: none;
+  border: 2px solid rgb(15, 157, 88);
 }

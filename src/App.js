@@ -12,7 +12,7 @@ const columns = 7;
 const createSheetMatrix = (rows, columns) => {
   let result = [];
   for (var i = 0; i < rows; i++) {
-    result.push(new Array(columns).fill(1));
+    result.push(new Array(columns).fill(''));
   }
 
   return result;
@@ -24,24 +24,60 @@ class App extends Component {
     super(props);
   
     this.state = {
-      matrix: {}
+      matrix: {},
+      rows: '',
+      columns: ''
     };
+
+    this.handleCellEdit = this.handleCellEdit.bind(this);
+  }
+
+  handleCellEdit(rowIndex, columnIndex, value) {
+    const matrix = [...this.state.matrix];
+    matrix[rowIndex][columnIndex] = value;
+
+    this.setState({
+      matrix
+    });
   }
 
   componentWillMount() {
-    console.log(createSheetMatrix(6,7));
     const newMatrix = createSheetMatrix(6,7)
-    const matrix = Object.assign({}, this.state.matrix, newMatrix);
-    console.log([matrix]);
     this.setState({
       matrix: newMatrix
+    });
+    //console.log(this.state.matrix.length);
+  }
+
+  _calculateNumberOfRows () {
+    //const add
+  }
+
+  addColumnToSheet() {
+    const matrix = [...this.state.matrix];
+    const newMatrix = matrix.map((row, key) => row.concat(''));
+
+    this.setState({
+      matrix: newMatrix,
+    });
+  }
+
+  removeColumnToSheet() {
+    const matrix = [...this.state.matrix];
+    const newMatrix = matrix.map((row, key) => row.slice(0, row.length - 1));
+
+    this.setState({
+      matrix: newMatrix,
     });
   }
 
   render() {
     return (
       <div className="App">
-        <MainTable matrix={this.state.matrix}/>
+        <MainTable matrix={this.state.matrix} onCellEdit={this.handleCellEdit}/>
+        <button onClick={() => this.addColumnToSheet()}>Add Column</button>
+        <button onClick={() => this.removeColumnToSheet()}>Remove Column</button>
+        <button>Add Row</button>
       </div>
     );
   }
