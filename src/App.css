@@ -22,3 +22,12 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.table-sheet {
+  border: 1px solid #eaeaea;
+}
+
+.table-sheet td {
+  border: 1px solid #f5f5f5;
+  padding: 20px;
+}
